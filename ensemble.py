@@ -116,12 +116,10 @@ def write_csv(file_path, hazard_data, product_data):
 # Tải và chuẩn hóa dữ liệu hazard
 hazard_data_list = [normalize_probabilities(load_json(file)) for file in HAZARD_FILES]
 hazard_ensembled = ensemble_probabilities(hazard_data_list, HAZARD_WEIGHTS)
-save_json(OUTPUT_HAZARD_ENSEMBLED, hazard_ensembled)
 
 # Tải và chuẩn hóa dữ liệu product
 product_data_list = [normalize_probabilities(load_json(file)) for file in PRODUCT_FILES]
 product_ensembled = ensemble_probabilities(product_data_list, PRODUCT_WEIGHTS)
-save_json(OUTPUT_PRODUCT_ENSEMBLED, product_ensembled)
 
 # Lưu kết quả cuối cùng vào CSV
 write_csv(OUTPUT_CSV, hazard_ensembled, product_ensembled)
