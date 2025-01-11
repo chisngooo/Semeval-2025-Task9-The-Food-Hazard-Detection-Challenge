@@ -1,8 +1,8 @@
 import pandas as pd
 import json
 import re
-file_path = '../public_test.csv'
-output_file = "test_256.json"
+file_path = '../incidents.csv'
+output_file = "private_test_512.json"
 df = pd.read_csv(file_path)
 data = df.to_dict(orient='records')
 
@@ -14,7 +14,7 @@ def clean_text(text):
     return text.strip()
 
 
-def chunk_text_by_sentence(text, chunk_size=170):
+def chunk_text_by_sentence(text, chunk_size=400):
     text = clean_text(text)
     text = re.sub(r'\n', ' ', text)
     sentences = re.split(r'(?<=[.!?]) +', text)

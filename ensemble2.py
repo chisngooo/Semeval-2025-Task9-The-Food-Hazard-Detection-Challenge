@@ -5,39 +5,22 @@ import zipfile
 
 # Đường dẫn đến các tệp JSON đầu vào
 HAZARD_FILES = [
-    "results/hazard/hazard_predictions_large-512.json", # score :0.401
-    "results/hazard/hazard_predictions_large_1024.json", #score : 0.442
-    # "results/hazard/hazard_predictions_base-512.json",  # score : 0.404
-    # "results/hazard/hazard_predictions_base-1024.json", # score : 0.408
-    # "results/hazard/hazard_probabilities_3145.json", # score:0.4118
-    # "results/hazard/hazard_probabilities_3528.json", # score : 0.4163
-    # "results/hazard/hazard_probabilities_3617.json", # score : 0.3937
-    # "results/hazard/hazard_probabilities_3684.json", # score: 0.4173
-    "results/hazard/hazard_predictions_roberta-large-512.json", # score : 0.425
-    "results/hazard/hazard_predictions_roberta-large-1024.json", # score :0.42
-    # "results/hazard/hazard_probabilities_1658.json",
-    "results/hazard/hazard_predictions_large-768.json",
-    # "results/hazard/hazard_predictions_large-1280.json"
-    
-    
-]
+        "eval_results/hazard/hazard_predictions_large-512.json",      # score: 0.401
+        "eval_results/hazard/hazard_predictions_large_1024.json",     # score: 0.442
+        "eval_results/hazard/hazard_predictions_roberta-large-512.json", # score: 0.425
+        "eval_results/hazard/hazard_predictions_roberta-large-1024.json", # score: 0.42
+        "eval_results/hazard/hazard_predictions_large-768.json"
+    ]
+
 PRODUCT_FILES = [
-    "results/product/product_predictions_large_512.json", # score : 0.40
-    # "results/product/product_predictions_large-1024.json", # score : 0.407
-    "results/product/product_predictions_base-512.json", # score : 0.368
-    # "results/product/product_predictions_base-1024.json", # score : 0.350
-    "results/product/product_probabilities_3145.json", # score : 0.407
-    # "results/product/product_probabilities_3528.json", # score : 0.389
-    # "results/product/product_probabilities_3617.json", # score : 0.3605
-    # "results/product/product_probabilities_3684.json", # score : 0.4216
-    # "results/product/product_predictions_v2-xlarge-512.json",
-    "results/product/product_predictions_robert-large-512.json",
-    "results/product/product_predictions_roberta-large-1024.json", # score: 0.381"
-    # "results/product/product_probabilities_1658.json",
-    "results/product/product_predictions_large-768.json",
-    "results/product/product_predictions_large-1280.json"
-    
-]
+        "eval_results/product/product_predictions_large_512.json",     # score: 0.40
+        "eval_results/product/product_predictions_base-512.json",      # score: 0.368
+        "eval_results/product/product_probabilities_3145.json",        # score: 0.407
+        "eval_results/product/product_predictions_robert-large-512.json",
+        "eval_results/product/product_predictions_roberta-large-1024.json", # score: 0.381
+        "eval_results/product/product_predictions_large-768.json",
+        "eval_results/product/product_predictions_large-1280.json"
+    ]
 OUTPUT_HAZARD_ENSEMBLED = "hazard_predictions_ensembled.json"
 OUTPUT_PRODUCT_ENSEMBLED = "product_predictions_ensembled.json"
 OUTPUT_CSV = "submission.csv"
@@ -46,8 +29,8 @@ OUTPUT_CSV = "submission.csv"
 # HAZARD_WEIGHTS = [0.1, 0.4, 0.2, 0.2, 0.1]  
 # PRODUCT_WEIGHTS = [0.1, 0.1, 0.3, 0.1, 0.1, 0.2, 0.1]
 
-HAZARD_WEIGHTS = [0.1, 0.4, 0.2, 0.2, 0.1]  
-PRODUCT_WEIGHTS = [0.1, 0.1, 0.3, 0.1, 0.1, 0.2, 0.1]
+HAZARD_WEIGHTS = [0.0714, 0.5, 0.2858, 0.0714, 0.0714]  
+PRODUCT_WEIGHTS = [0.1304, 0.2174, 0.3043, 0.0435, 0.1304, 0.0435, 0.1304]
 
  
 def load_json(file_path):
