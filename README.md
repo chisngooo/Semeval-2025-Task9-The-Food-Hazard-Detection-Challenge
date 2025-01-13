@@ -77,22 +77,46 @@ All necessary data can be downloaded from the [SemEval 2025 Task 9 Landing Page]
    git clone https://github.com/your-username/semeval2025-task9.git](https://github.com/Zhennor/Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
    cd Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
 2. Train model:
-   ## For Multitask Training (Recommended for combined training of both hazard-category and product-category models):
+   # Model Training Documentation
+
+   ## Training Options
+
+   ### 2.1. Multitask Training 
+
+   This approach trains both hazard-category and product-category models simultaneously, which can lead to better performance through shared learning.
+
    ```bash
    python3 train_multitask.py \
-     --input_file /path/to/your/train_chunk.json \
-     --output_dir ./results \
-     --model_output_dir ./result \
-     --learning_rate 2e-5 \
-     --num_epochs 10 \
-     --train_batch_size 4 \
-     --eval_batch_size 2 \
-     --gradient_accumulation_steps 4 \
-     --oversample_count 50 \
-     --undersample_count 500 \
-     --seed 42
-   
-   ## For Independent Training (When you want to train each model separately):
+   --input_file /path/to/your/train_chunk.json \
+   --output_dir ./results \
+   --model_output_dir ./result \
+   --learning_rate 2e-5 \
+   --num_epochs 10 \
+   --train_batch_size 4 \
+   --eval_batch_size 2 \
+   --gradient_accumulation_steps 4 \
+   --oversample_count 50 \
+   --undersample_count 500 \
+   --seed 42
+   ```
+
+   #### Parameters:
+   - `input_file`: Path to training data JSON file
+   - `output_dir`: Directory for saving training results
+   - `model_output_dir`: Directory for saving model checkpoints
+   - `learning_rate`: Learning rate for training (default: 2e-5)
+   - `num_epochs`: Number of training epochs (default: 10)
+   - `train_batch_size`: Batch size for training (default: 4)
+   - `eval_batch_size`: Batch size for evaluation (default: 2)
+   - `gradient_accumulation_steps`: Number of steps to accumulate gradients (default: 4)
+   - `oversample_count`: Count for oversampling minority classes (default: 50)
+   - `undersample_count`: Count for undersampling majority classes (default: 500)
+   - `seed`: Random seed for reproducibility (default: 42)
+
+   ### 2.2. Independent Training
+
+   Use this approach when you want to train hazard-category and product-category models separately.
+
    ```bash
    python3 train_independent.py \
    --data_path /path/to/data.json \
@@ -102,7 +126,23 @@ All necessary data can be downloaded from the [SemEval 2025 Task 9 Landing Page]
    --batch_size 1 \
    --learning_rate 1e-5 \
    --num_epochs 15
+   ```
 
+   #### Parameters:
+   - `data_path`: Path to training data JSON file
+   - `model_path`: Path to pretrained model (default: microsoft/deberta-v3-large)
+   - `max_length`: Maximum sequence length (default: 1280)
+   - `output_dir`: Directory for saving outputs
+   - `batch_size`: Batch size for training and evaluation (default: 1)
+   - `learning_rate`: Learning rate for training (default: 1e-5)
+   - `num_epochs`: Number of training epochs (default: 15)
+
+   ## Recommendations
+
+   - For most use cases, we recommend using the multitask training approach as it can leverage shared learning between tasks
+   - Adjust batch sizes and gradient accumulation steps based on your available GPU memory
+   - Experiment with learning rates between 1e-5 and 5e-5
+   - Monitor training logs to ensure stable training and adjust hyperparameters if needed
 3. Predict:
    ```bash
    python predict.py \
