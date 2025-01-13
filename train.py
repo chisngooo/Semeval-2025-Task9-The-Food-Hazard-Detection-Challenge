@@ -7,7 +7,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trai
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 import matplotlib.pyplot as plt
 import torch
-from torch.nn import CrossEntropyLoss
+from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss
 import os
 import shutil
 from transformers import AutoModel
@@ -32,6 +32,8 @@ def parse_args():
                       help='Training batch size per device')
     parser.add_argument('--eval_batch_size', type=int, default=2,
                       help='Evaluation batch size per device')
+    parser.add_argument('--gradient_accumulation_steps', type=int, default=4,
+                      help='Number of steps for gradient accumulation')
     parser.add_argument('--oversample_count', type=int, default=50,
                       help='Number of samples to add for oversampling')
     parser.add_argument('--undersample_count', type=int, default=500,
@@ -288,7 +290,7 @@ def main():
         metric_for_best_model="avg_macro_f1",
         save_total_limit=2,
         fp16=torch.cuda.is_available(),
-        gradient_accumulation_steps=4,
+        gradient_accumulation_steps=args.gradient_accumulation_steps,
         warmup_ratio=0.1,
     )
 
