@@ -5,51 +5,43 @@ import zipfile
 
 # Đường dẫn đến các tệp JSON đầu vào
 HAZARD_FILES = [
-    "results/hazard/hazard_predictions_large-512.json", # score :0.401
-    "results/hazard/hazard_predictions_large_1024.json", #score : 0.442
-    # "results/hazard/hazard_predictions_base-512.json",  # score : 0.404
-    # "results/hazard/hazard_predictions_base-1024.json", # score : 0.408
-    # "results/hazard/hazard_probabilities_3145.json", # score:0.4118
-    # "results/hazard/hazard_probabilities_3528.json", # score : 0.4163
-    # "results/hazard/hazard_probabilities_3617.json", # score : 0.3937
-    # "results/hazard/hazard_probabilities_3684.json", # score: 0.4173
-    "results/hazard/hazard_predictions_roberta-large-512.json", # score : 0.425
-    "results/hazard/hazard_predictions_roberta-large-1024.json", # score :0.42
-    # "results/hazard/hazard_probabilities_1658.json",
-    "results/hazard/hazard_predictions_large-768.json",
-    # "results/hazard/hazard_predictions_large-1280.json"
-    
-    
-]
+        "eval_results/hazard/hazard_predictions_large-512-v2.json",                 #data aug ver1
+        "eval_results/hazard/hazard_predictions_large-768.json",                 #data aug ver2
+        "eval_results/hazard/hazard_predictions_large-1024-v2.json",                #data aug ver1
+        "eval_results/hazard/hazard_predictions_large-1280.json",                #data aug ver2
+        "eval_results/hazard/hazard_probabilities_3145.json",                    #multitask under and over sample 
+        "eval_results/hazard/hazard_predictions_roberta-large-512.json",         #data aug ver2
+        "eval_results/hazard/hazard_predictions_roberta-large-1024.json",        #data aug ver2 
+    ]
 PRODUCT_FILES = [
-    "results/product/product_predictions_large_512.json", # score : 0.40
-    # "results/product/product_predictions_large-1024.json", # score : 0.407
-    "results/product/product_predictions_base-512.json", # score : 0.368
-    # "results/product/product_predictions_base-1024.json", # score : 0.350
-    "results/product/product_probabilities_3145.json", # score : 0.407
-    # "results/product/product_probabilities_3528.json", # score : 0.389
-    # "results/product/product_probabilities_3617.json", # score : 0.3605
-    # "results/product/product_probabilities_3684.json", # score : 0.4216
-    # "results/product/product_predictions_v2-xlarge-512.json",
-    "results/product/product_predictions_robert-large-512.json",
-    "results/product/product_predictions_roberta-large-1024.json", # score: 0.381"
-    # "results/product/product_probabilities_1658.json",
-    "results/product/product_predictions_large-768.json",
-    "results/product/product_predictions_large-1280.json"
-    
-]
+        "eval_results/product/product_predictions_large-512-v2.json",               #data aug ver 1
+        "eval_results/product/product_predictions_large-768.json",               #data aug ver2
+        "eval_results/product/product_predictions_large-1024-v2.json",              #data aug ver 1
+        "eval_results/product/product_predictions_large-1280.json",              #data aug ver2
+        "eval_results/product/product_probabilities_3145.json",                  #multitask under and over sample 
+        "eval_results/product/product_predictions_roberta-large-512.json",        #data aug ver2
+        "eval_results/product/product_predictions_roberta-large-1024.json",      #data aug ver2
+    ]
 OUTPUT_HAZARD_ENSEMBLED = "hazard_predictions_ensembled.json"
 OUTPUT_PRODUCT_ENSEMBLED = "product_predictions_ensembled.json"
 OUTPUT_CSV = "submission.csv"
 
-# best-weight
+# relative_weight
 # HAZARD_WEIGHTS = [0.1, 0.4, 0.2, 0.2, 0.1]  
 # PRODUCT_WEIGHTS = [0.1, 0.1, 0.3, 0.1, 0.1, 0.2, 0.1]
 
-HAZARD_WEIGHTS = [0.1, 0.4, 0.2, 0.2, 0.1]  
-PRODUCT_WEIGHTS = [0.1, 0.1, 0.3, 0.1, 0.1, 0.2, 0.1]
+# # best each moedl
+# HAZARD_WEIGHTS = [0, 0, 1, 0 , 0, 0, 0]  
+# PRODUCT_WEIGHTS = [0, 0, 0, 0, 1, 0, 0]
 
- 
+# #grid_search weight- 1+2
+# HAZARD_WEIGHTS = [0.0400, 0.0400, 0.4000, 0.4000, 0.0400, 0.0400, 0.0400]  
+# PRODUCT_WEIGHTS = [0.2258, 0.0323, 0.0323, 0.2258, 0.3226, 0.1290, 0.0323]
+
+#grid_search weight- 2
+HAZARD_WEIGHTS = [0.3182, 0.3182, 0.0455, 0.1818, 0.0455, 0.0455, 0.0455]  
+PRODUCT_WEIGHTS = [0.1628, 0.2326, 0.0930, 0.0930, 0.1628, 0.0233, 0.2326]
+
 def load_json(file_path):
     """Tải dữ liệu từ tệp JSON."""
     with open(file_path, "r", encoding="utf-8") as f:

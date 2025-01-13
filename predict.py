@@ -7,13 +7,13 @@ import csv
 import zipfile
 from tqdm import tqdm
 
-HAZARD_MODEL_PATH = "checkpoint/hazard/large-768/checkpoint-8571"
-PRODUCT_MODEL_PATH = "checkpoint/product/large-1280"
-INPUT_JSON = "test_512.json"
+HAZARD_MODEL_PATH = "checkpoint-augv2/hazard/large-512"
+PRODUCT_MODEL_PATH = "checkpoint-augv2/product/large-512/checkpoint-9174"
+INPUT_JSON = "private_test_512.json"
 OUTPUT_CSV = "submission.csv"
 OUTPUT_ZIP = "submission.zip"  
-OUTPUT_HAZARD_JSON = "results/hazard/hazard_predictions_large-768.json"  
-OUTPUT_PRODUCT_JSON = "results/product/product_predictions_large-1280.json" 
+OUTPUT_HAZARD_JSON = "eval_results/hazard/hazard_predictions_large-512-v2.json"  
+OUTPUT_PRODUCT_JSON = "eval_results/product/product_predictions_large-512-v2.json" 
 
 MAX_LENGTH = 512
 

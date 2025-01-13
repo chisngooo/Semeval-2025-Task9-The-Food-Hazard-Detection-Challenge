@@ -128,44 +128,48 @@ def grid_search_product(product_files, ground_truth_csv, weight_range):
 if __name__ == "__main__":
     # Define files and parameters
     HAZARD_FILES = [
-        "results/hazard/hazard_predictions_large-512.json",      # score: 0.401
-        "results/hazard/hazard_predictions_large_1024.json",     # score: 0.442
-        "results/hazard/hazard_predictions_roberta-large-512.json", # score: 0.425
-        "results/hazard/hazard_predictions_roberta-large-1024.json", # score: 0.42
-        "results/hazard/hazard_predictions_large-768.json"
-    ]
-
+            "results/hazard/hazard_predictions_large-512-v2.json",                 #data aug ver1
+            "results/hazard/hazard_predictions_large-768.json",                 #data aug ver2
+            "results/hazard/hazard_predictions_large-1024.json",                #data aug ver1
+            "results/hazard/hazard_predictions_large-1280.json",                #data aug ver2
+            "results/hazard/hazard_probabilities_3145.json",                    #multitask under and over sample 
+            "results/hazard/hazard_predictions_roberta-large-512.json",
+            "results/hazard/hazard_predictions_roberta-large-1024.json",
+            "results/hazard/hazard_predict_LLM-1.json"
+        ]
     PRODUCT_FILES = [
-        "results/product/product_predictions_large_512.json",     # score: 0.40
-        "results/product/product_predictions_base-512.json",      # score: 0.368
-        "results/product/product_probabilities_3145.json",        # score: 0.407
-        "results/product/product_predictions_robert-large-512.json",
-        "results/product/product_predictions_roberta-large-1024.json", # score: 0.381
-        "results/product/product_predictions_large-768.json",
-        "results/product/product_predictions_large-1280.json"
-    ]
-
-    # Define ground truth file
+            "results/product/product_predictions_large-512-v2.json",               #data aug ver 1
+            "results/product/product_predictions_large-768.json",               #data aug ver2
+            "results/product/product_predictions_large-1024.json",              #data aug ver 1
+            "results/product/product_predictions_large-1280.json",              #data aug ver2
+            "results/product/product_probabilities_3145.json",                  #multitask under and over sample 
+            "results/product/product_predictions_robert-large-512.json",
+            "results/product/product_predictions_roberta-large-1024.json",
+            "results/product/product_predict_LLM-3.json"
+        ]
+        # Define ground truth file
     GROUND_TRUTH_FILE = "incidents_valid.csv"
     
     # Define weight range (0.1 to 1.0 với step 0.1)
-    WEIGHT_RANGE = np.arange(0.1, 1.1, 0.2)
+    WEIGHT_RANGE = np.arange(0.1, 1.1, 0.4)
 
-    # print("\nStarting hazard category grid search...")
-    # try:
-    #     hazard_best_score, hazard_best_weights = grid_search_hazard(
-    #         hazard_files=HAZARD_FILES,
-    #         ground_truth_csv=GROUND_TRUTH_FILE,
-    #         weight_range=WEIGHT_RANGE
-    #     )
-    #     print("\nBest hazard category macro F1 score:", hazard_best_score)
-    #     print("\nHazard weights to model mapping:")
-    #     for weight, file in zip(hazard_best_weights, HAZARD_FILES):
-    #         print(f"  {file}: {weight:.4f}")
-    # except Exception as e:
-    #     print(f"Error in hazard grid search: {str(e)}")
+    print("\nStarting hazard category grid search...")
+    try:
+        hazard_best_score, hazard_best_weights = grid_search_hazard(
+            hazard_files=HAZARD_FILES,
+            ground_truth_csv=GROUND_TRUTH_FILE,
+            weight_range=WEIGHT_RANGE
+        )
+        print("\nBest hazard category macro F1 score:", hazard_best_score)
+        print("\nHazard weights to model mapping:")
+        for weight, file in zip(hazard_best_weights, HAZARD_FILES):
+            print(f"  {file}: {weight:.4f}")
+        print("\nBest hazard weights list:")
+        print(", ".join([f"{weight:.4f}" for weight in hazard_best_weights]))
+    except Exception as e:
+        print(f"Error in hazard grid search: {str(e)}")
 
-    # print("\nStarting product category grid search...")
+    print("\nStarting product category grid search...")
     try:
         product_best_score, product_best_weights = grid_search_product(
             product_files=PRODUCT_FILES,
@@ -176,5 +180,7 @@ if __name__ == "__main__":
         print("\nProduct weights to model mapping:")
         for weight, file in zip(product_best_weights, PRODUCT_FILES):
             print(f"  {file}: {weight:.4f}")
+        print("\nBest product weights list:")
+        print(", ".join([f"{weight:.4f}" for weight in product_best_weights]))
     except Exception as e:
         print(f"Error in product grid search: {str(e)}")
