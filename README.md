@@ -74,5 +74,19 @@ All necessary data can be downloaded from the [SemEval 2025 Task 9 Landing Page]
 ### Setup:
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/semeval2025-task9.git
-   cd semeval2025-task9
+   git clone https://github.com/your-username/semeval2025-task9.git](https://github.com/Zhennor/Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
+   cd Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
+2. Train model:
+   ```bash
+   python train.py \
+     --input_file /path/to/your/train_chunk.json \
+     --output_dir ./results \
+     --model_output_dir ./result \
+     --learning_rate 2e-5 \
+     --num_epochs 10 \
+     --train_batch_size 4 \
+     --eval_batch_size 2 \
+     --oversample_count 50 \
+     --undersample_count 500 \
+     --seed 42
+   
