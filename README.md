@@ -90,4 +90,14 @@ All necessary data can be downloaded from the [SemEval 2025 Task 9 Landing Page]
      --oversample_count 50 \
      --undersample_count 500 \
      --seed 42
+3. Predict:
+   ```bash
+   python predict.py \
+      --hazard_model "huggingface_hazard_model_path" \
+      --product_model "huggingface_product_model_path" \
+      --input_json "private_test_512.json" \
+      --output_csv "submission.csv" \
+      --output_zip "submission.zip" \
+      -output_hazard_json "hazard_predictions.json" \
+      --output_product_json "product_predictions.json"
    
