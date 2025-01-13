@@ -77,8 +77,9 @@ All necessary data can be downloaded from the [SemEval 2025 Task 9 Landing Page]
    git clone https://github.com/your-username/semeval2025-task9.git](https://github.com/Zhennor/Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
    cd Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
 2. Train model:
+   ## For Multitask Training (Recommended for combined training of both hazard-category and product-category models):
    ```bash
-   python3 train.py \
+   python3 train_multitask.py \
      --input_file /path/to/your/train_chunk.json \
      --output_dir ./results \
      --model_output_dir ./result \
@@ -90,6 +91,18 @@ All necessary data can be downloaded from the [SemEval 2025 Task 9 Landing Page]
      --oversample_count 50 \
      --undersample_count 500 \
      --seed 42
+   
+   ## For Independent Training (When you want to train each model separately):
+   ```bash
+   python3 train_independent.py \
+   --data_path /path/to/data.json \
+   --model_path microsoft/deberta-v3-large \
+   --max_length 1280 \
+   --output_dir output_classification \
+   --batch_size 1 \
+   --learning_rate 1e-5 \
+   --num_epochs 15
+
 3. Predict:
    ```bash
    python predict.py \
