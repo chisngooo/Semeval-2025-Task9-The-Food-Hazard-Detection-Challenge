@@ -5,6 +5,8 @@ from torch.nn import functional as F
 from torch import nn
 from safetensors.torch import load_file
 from tqdm import tqdm
+import json
+from collections import defaultdict
 
 class MultiTaskClassifier(nn.Module):
     def __init__(self, model_name, product_num_labels, hazard_num_labels):
@@ -37,7 +39,7 @@ def load_model_and_tokenizer(checkpoint_folder):
     # Load training arguments and label mappings
     training_args = torch.load(f"{checkpoint_folder}/training_args.bin")
     try:
-        with open("archive/label_mappings.json", 'r') as f:
+        with open("data/label_mappings.json", 'r') as f:
             mappings = json.load(f)
     except FileNotFoundError:
         mappings = {
@@ -126,6 +128,17 @@ def process_json_file(input_json_path, output_json_path, checkpoint_folder, batc
     
     return results
 
+def aggregate_by_stt(data):
+    grouped_results = defaultdict(lambda: {"product_probs": defaultdict(float), "hazard_probs": defaultdict(float)})
+    for row in data:
+        stt = row["stt"]
+        for label, prob in row["product_prediction"].items():
+            grouped_results[stt]["product_probs"][label] += prob
+        for label, prob in row["hazard_prediction"].items():
+            grouped_results[stt]["hazard_probs"][label] += prob
+    return grouped_results
+
+
 if __name__ == "__main__":
     checkpoint_folder = "checkpoint-multitask/checkpoint-3370"  
     input_json_path = "data/public_test_512.json"  
@@ -139,7 +152,65 @@ if __name__ == "__main__":
         batch_size
     )
     
-    print("\nExample prediction for first record:")
-    print(f"Text: {processed_data[0]['text'][:100]}...")
-    print("Product predictions:", dict(list(processed_data[0]['product_prediction'].items())[:3]), "...")
-    print("Hazard predictions:", dict(list(processed_data[0]['hazard_prediction'].items())[:3]), "...")
+
+    label_mapping_file = "data/label_mappings.json"
+    with open(label_mapping_file, "r", encoding="utf-8") as f:
+        label_mapping = json.load(f)
+
+    product_label_to_id = {str(v): k for k, v in label_mapping["product_label_to_id"].items()}
+    hazard_label_to_id = {str(v): k for k, v in label_mapping["hazard_label_to_id"].items()}
+
+
+    # Đọc file JSON
+    files = [
+    "predictions_with_stt_3370.json"
+    ]
+
+    weights = [1]
+    grouped_results_list = []
+
+    for file in files:
+        with open(file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            grouped_results_list.append(aggregate_by_stt(data))
+
+    # Gộp kết quả từ các file với trọng số
+    combined_results = defaultdict(lambda: {"product_probs": defaultdict(float), "hazard_probs": defaultdict(float)})
+
+    for grouped_results, weight in zip(grouped_results_list, weights):
+        for stt, probs in grouped_results.items():
+            for label, prob in probs["product_probs"].items():
+                combined_results[stt]["product_probs"][label] += prob * weight
+            for label, prob in probs["hazard_probs"].items():
+                combined_results[stt]["hazard_probs"][label] += prob * weight
+
+    # Tạo file kết quả đầu ra
+    final_results_product = []
+    final_results_hazard = []
+
+    for stt, probs in combined_results.items():
+        # Kết quả cho product_probabilities (convert từ ID -> label)
+        product_probabilities = {product_label_to_id[label]: prob for label, prob in probs["product_probs"].items()}
+        final_results_product.append({
+            "stt": int(stt),
+            "product_probabilities": product_probabilities,
+        })
+        
+        # Kết quả cho hazard_probabilities (convert từ ID -> label)
+        hazard_probabilities = {hazard_label_to_id[label]: prob for label, prob in probs["hazard_probs"].items()}
+        final_results_hazard.append({
+            "stt": int(stt),
+            "hazard_probabilities": hazard_probabilities,
+        })
+
+    # Xuất ra file JSON
+    output_product_file = "results/public/product/product_probabilities_3370.json"
+    output_hazard_file = "results/public/hazard/hazard_probabilities_3370.json"
+
+    with open(output_product_file, "w", encoding="utf-8") as f:
+        json.dump(final_results_product, f, ensure_ascii=False, indent=4)
+
+    with open(output_hazard_file, "w", encoding="utf-8") as f:
+        json.dump(final_results_hazard, f, ensure_ascii=False, indent=4)
+
+    print(f"Kết quả đã được lưu vào '{output_product_file}' và '{output_hazard_file}'.")

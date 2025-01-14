@@ -30,7 +30,7 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
 ### Setup:
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/semeval2025-task9.git](https://github.com/Zhennor/Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
+   git clone https://github.com/Zhennor/Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
    cd Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
 2. Train model:
    # Model Training Documentation
