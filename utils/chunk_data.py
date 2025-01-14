@@ -1,22 +1,13 @@
 import pandas as pd
 import json
 import re
-file_path = '../data/data.csv'
-output_file = "ss_test_512.json"
+file_path = '../data/val.csv'
+output_file = "../data/val_1024.json"
 df = pd.read_csv(file_path)
 data = df.to_dict(orient='records')
 
-def clean_text(text):
-    text = re.sub(r'[^\w\s.,!?;]', '', text)
-    text = re.sub(r'\n', ' ', text)
-    text = re.sub(r'\s+', ' ', text)
-    text = re.sub(r'([.,!?;])', r'\1 ', text)
-    return text.strip()
-
-
-def chunk_text_by_sentence(text, chunk_size=400):
-    text = clean_text(text)
-    text = re.sub(r'\n', ' ', text)
+#400,650, 900, 1150
+def chunk_text_by_sentence(text, chunk_size=900):
     sentences = re.split(r'(?<=[.!?]) +', text)
     chunks = []
     current_chunk = []
