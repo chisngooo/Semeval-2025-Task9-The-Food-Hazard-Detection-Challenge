@@ -12,36 +12,6 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
 1. **Data Augmentation**:
    - Augmented **100 samples** for the **9 lowest product categories** and **4 lowest hazard categories** to address class imbalance.
 
-2. **Ensemble of 14 Models**:
-   - The ensemble consists of **7 models for `hazard-category`** and **7 models for `product-category`**.
-   - All 14 models are variations based on two main architectures:
-     - **`deberta-v3-large`**
-     - **`roberta-large`**
-   - The variations are achieved by applying different token chunking strategies during preprocessing.  
-
-### Results:
-- Our system achieved **Top 2 on the Public Leaderboard** during the **Evaluation Phase**, showcasing the effectiveness of our ensemble and preprocessing strategies.
-
-
-### Requirements:
-- Python >= 3.8
-- PyTorch >= 1.11.0
-- Transformers (Hugging Face) >= 4.22.0
-
-![Logo](image/logo.png)
-# SemEval 2025 Task 9: The Food Hazard Detection Challenge
-
-## Overview
-This repository contains our implementation for **SemEval 2025 Task 9: The Food Hazard Detection Challenge**. The challenge focuses on **explainable classification systems** for food-incident report titles collected from the web. The goal is to develop automated systems that identify and extract food-related hazards with high transparency and explainability.
-
-## Our System
-
-Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard prediction.
-
-### Approach:
-1. **Data Augmentation**:
-   - Augmented **100 samples** for the **9 lowest product categories** and **4 lowest hazard categories** to address class imbalance.
-
 2. **Ensemble of 13 Models**:
    - The ensemble consists of **6 models for `hazard-category`**, **6 models for `product-category`** and **1 model multitask for both**.
    - All 13 models are variations based on two main architectures:
