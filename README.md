@@ -125,23 +125,23 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
 
    ```bash
    python predict_independent.py \
-      --hazard_models "Quintu/deberta-v3-large-512-hazard Quintu/deberta-v3-large-1024-hazard" \
-      --product_models "Quintu/deberta-v3-large-512-product Quintu/deberta-v3-large-1024-product" \
-      --input_json "test_data.json" \
-      --output_dir "predictions" \
-      --batch_size 2 \
-      --weights "1.0 1.0" \
-      --label_mapping "data/label_mappings.json"
+      --hazard_model "huggingface_hazard_model_path" \
+      --product_model "huggingface_product_model_path" \
+      --input_json "private_test_512.json" \
+      --output_csv "submission.csv" \
+      --output_zip "submission.zip" \
+      --output_hazard_json "hazard_predictions.json" \
+      --output_product_json "product_predictions.json"
    ```
 
    #### Parameters:
    - `hazard_models`: Space-separated list of hazard model paths
    - `product_models`: Space-separated list of product model paths
    - `input_json`: Path to test data JSON file
-   - `output_dir`: Directory to save predictions
-   - `batch_size`: Batch size for inference (default: 2)
-   - `weights`: Space-separated list of weights for model ensemble (default: equal weights)
-   - `label_mapping`: Path to label mapping file (default: data/label_mappings.json)
+   - `output_csv`: Path to the output CSV file
+   - `output_zip`: Path to the output ZIP file
+   - `output_hazard_json`: Path to the output hazard predictions JSON
+   - `output_product_json`: Path to the output product predictions JSON
 
 ### List of Models
 
