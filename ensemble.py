@@ -9,7 +9,7 @@ HAZARD_FILES = [
             "results/public/hazard/hazard_predictions_large-768.json",                 #data aug ver2
             "results/public/hazard/hazard_predictions_large-1024.json",                #data aug ver1
             "results/public/hazard/hazard_predictions_large-1280.json",                #data aug ver2
-            "results/public/hazard/hazard_probabilities_3370.json",                    #multitask under and over sample 
+            "results/public/hazard/hazard_probabilities_3145.json",                    #multitask under and over sample 
             "results/public/hazard/hazard_predictions_roberta-large-512.json",         #data aug ver2
             "results/public/hazard/hazard_predictions_roberta-large-1024.json"         #data aug ver2
         ]
@@ -18,7 +18,7 @@ PRODUCT_FILES = [
             "results/public/product/product_predictions_large-768.json",               #data aug ver2
             "results/public/product/product_predictions_large-1024.json",              #data aug ver 1
             "results/public/product/product_predictions_large-1280.json",              #data aug ver2
-            "results/public/product/product_probabilities_3370.json",                  #multitask under and over sample 
+            "results/public/product/product_probabilities_3145.json",                  #multitask under and over sample 
             "results/public/product/product_predictions_roberta-large-512.json",       #data aug ver2
             "results/public/product/product_predictions_roberta-large-1024.json"       #data aug ver2
         ]

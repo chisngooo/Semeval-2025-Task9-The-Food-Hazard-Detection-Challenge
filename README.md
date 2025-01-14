@@ -23,7 +23,7 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
 - Our system achieved **Top 2 on the Public Leaderboard** during the **Conception Phase**, showcasing the effectiveness of our ensemble and preprocessing strategies.
 
 ### Requirements:
-- Python >= 3.8
+- Python == 3.10
 - PyTorch >= 1.11.0
 - Transformers (Hugging Face) >= 4.22.0
 
@@ -33,13 +33,17 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
    git clone https://github.com/Zhennor/Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
    cd Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
    ```
+2. Install necessary libraries:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-2. Train model:
+3. Train model:
    # Model Training Documentation
 
    ## Training Options
 
-   ### 2.1. Multitask Training 
+   ### 3.1. Multitask Training 
 
    This approach trains both hazard-category and product-category models simultaneously, which can lead to better performance through shared learning.
 
@@ -71,12 +75,12 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
    - `undersample_count`: Count for undersampling majority classes (default: 500)
    - `seed`: Random seed for reproducibility (default: 42)
 
-   ### 2.2. Independent Training
+   ### 3.2. Independent Training
 
    Use this approach when you want to train hazard-category and product-category models separately.
 
    ```bash
-   python train_independent.py \
+   python3 train_independent.py \
       --data_path /path/to/data.json \
       --model_path microsoft/deberta-v3-large \
       --task [hazard/product] \
@@ -97,16 +101,16 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
    - `learning_rate`: Learning rate for training (default: 1e-5)
    - `num_epochs`: Number of training epochs (default: 15)
 
-3. Predict:
+4. Predict:
 
-   ### 3.1. Multitask Prediction
+   ### 4.1. Multitask Prediction
    
    Use this approach when you have a single model trained for both tasks:
 
    ```bash
-   python predict_multitask.py \
+   python3 predict_multitask.py \
       --model_name "Quintu/deberta-v3-large-multitask-food" \
-      --input_json "test_data.json" \
+      --input_json "data/private_test_512.json" \
       --output_dir "predictions" \
       --batch_size 2 \
       --label_mapping "data/label_mappings.json"
@@ -119,15 +123,15 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
    - `batch_size`: Batch size for inference (default: 2)
    - `label_mapping`: Path to label mapping file (default: data/label_mappings.json)
 
-   ### 3.2. Independent Prediction
+   ### 4.2. Independent Prediction
    
    Use this approach when you have separate models for hazard and product classification:
 
    ```bash
-   python predict_independent.py \
+   python3 predict_independent.py \
       --hazard_model "huggingface_hazard_model_path" \
       --product_model "huggingface_product_model_path" \
-      --input_json "private_test_512.json" \
+      --input_json "data/private_test_512.json" \
       --output_csv "submission.csv" \
       --output_zip "submission.zip" \
       --output_hazard_json "hazard_predictions.json" \
