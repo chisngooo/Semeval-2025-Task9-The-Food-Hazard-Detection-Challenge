@@ -110,3 +110,25 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
       -output_hazard_json "hazard_predictions.json" \
       --output_product_json "product_predictions.json"
    
+
+### List of Independent Models
+
+#### Hazard-Category Models:
+- [Quintu/deberta-v3-large-512-hazard](https://huggingface.co/Quintu/deberta-v3-large-512-hazard)
+- [Quintu/deberta-v3-large-768-hazard](https://huggingface.co/Quintu/deberta-v3-large-768-hazard)
+- [Quintu/deberta-v3-large-1024-hazard](https://huggingface.co/Quintu/deberta-v3-large-1024-hazard)
+- [Quintu/deberta-v3-large-1280-hazard](https://huggingface.co/Quintu/deberta-v3-large-1280-hazard)
+- [Quintu/deberta-v3-large-512-hazard-aug2](https://huggingface.co/Quintu/deberta-v3-large-512-hazard-aug2)
+- [Quintu/deberta-v3-large-1024-hazard-aug2](https://huggingface.co/Quintu/deberta-v3-large-1024-hazard-aug2)
+- [Quintu/roberta-large-512-hazard](https://huggingface.co/Quintu/roberta-large-512-hazard)
+- [Quintu/roberta-large-1024-hazard](https://huggingface.co/Quintu/roberta-large-1024-hazard)
+
+#### Product-Category Models:
+- [Quintu/deberta-v3-large-512-product](https://huggingface.co/Quintu/deberta-v3-large-512-product)
+- [Quintu/deberta-v3-large-768-product](https://huggingface.co/Quintu/deberta-v3-large-768-product)
+- [Quintu/deberta-v3-large-1024-product](https://huggingface.co/Quintu/deberta-v3-large-1024-product)
+- [Quintu/deberta-v3-large-1280-product](https://huggingface.co/Quintu/deberta-v3-large-1280-product)
+- [Quintu/deberta-v3-large-512-product-aug2](https://huggingface.co/Quintu/deberta-v3-large-512-product-aug2)
+- [Quintu/deberta-v3-large-1024-product-aug2](https://huggingface.co/Quintu/deberta-v3-large-1024-product-aug2)
+- [Quintu/roberta-large-512-product](https://huggingface.co/Quintu/roberta-large-512-product)
+- [Quintu/roberta-large-1024-product](https://huggingface.co/Quintu/roberta-large-1024-product)
