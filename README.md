@@ -74,19 +74,21 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
    Use this approach when you want to train hazard-category and product-category models separately.
 
    ```bash
-   python3 train_independent.py \
-   --data_path /path/to/data.json \
-   --model_path microsoft/deberta-v3-large \
-   --max_length 1280 \
-   --output_dir output_classification \
-   --batch_size 1 \
-   --learning_rate 1e-5 \
-   --num_epochs 15
+   python train_independent.py \
+      --data_path /path/to/data.json \
+      --model_path microsoft/deberta-v3-large \
+      --task [hazard/product] \
+      --max_length 512 \
+      --output_dir output_classification \
+      --batch_size 1 \
+      --learning_rate 1e-5 \
+      --num_epochs 15
    ```
 
    #### Parameters:
    - `data_path`: Path to training data JSON file
    - `model_path`: Path to pretrained model (default: microsoft/deberta-v3-large)
+   - `task`: Options: 'hazard' or 'product'. Specifies whether to train hazard-category or product-category classifier
    - `max_length`: Maximum sequence length (default: 1280)
    - `output_dir`: Directory for saving outputs
    - `batch_size`: Batch size for training and evaluation (default: 1)

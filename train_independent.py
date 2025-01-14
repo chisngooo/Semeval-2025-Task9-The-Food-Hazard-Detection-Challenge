@@ -55,7 +55,7 @@ def compute_metrics_classification(p):
         'f1': f1,
     }
 
-def load_and_preprocess_data(data_path, max_length):
+def load_and_preprocess_data(data_path, max_length, task):
     with open(data_path, "r") as f:
         data_json = json.load(f)
     data = pd.DataFrame(data_json)
@@ -86,11 +86,15 @@ def load_and_preprocess_data(data_path, max_length):
         split: Dataset.from_pandas(df) for split, df in dataset_dict.items()
     })
     
-    hazard_labels = sorted(list(data["hazard_category"].unique()))
-    hazard_label2id = {label: idx for idx, label in enumerate(hazard_labels)}
-    hazard_id2label = {idx: label for label, idx in hazard_label2id.items()}
+    if task == 'hazard':
+        labels = sorted(list(data["hazard_category"].unique()))
+    else:  # task == 'product'
+        labels = sorted(list(data["product_category"].unique()))
+        
+    label2id = {label: idx for idx, label in enumerate(labels)}
+    id2label = {idx: label for label, idx in label2id.items()}
     
-    return datasets, hazard_labels, hazard_label2id, hazard_id2label
+    return datasets, labels, label2id, id2label
 
 def main():
     parser = argparse.ArgumentParser(description='Train a classification model')
@@ -108,12 +112,14 @@ def main():
                         help='Learning rate')
     parser.add_argument('--num_epochs', type=int, default=15,
                         help='Number of training epochs')
+    parser.add_argument('--task', type=str, choices=['hazard', 'product'], required=True,
+                        help='Classification task: hazard-category or product-category')
     
     args = parser.parse_args()
     
     # Load and preprocess data
-    datasets, hazard_labels, hazard_label2id, hazard_id2label = load_and_preprocess_data(
-        args.data_path, args.max_length
+    datasets, labels, label2id, id2label = load_and_preprocess_data(
+        args.data_path, args.max_length, args.task
     )
     
     # Initialize tokenizer
@@ -128,27 +134,27 @@ def main():
     
     tokenized_datasets = datasets.map(tokenize_function, batched=True)
     
-    def encode_hazard_labels(examples):
-        label = examples['hazard']
-        if label not in hazard_label2id:
-            return {'labels': hazard_label2id.get('other hazard', 0)}
-        return {'labels': hazard_label2id[label]}
+    def encode_labels(examples):
+        label = examples[args.task]  # Use either 'hazard' or 'product' based on task
+        if label not in label2id:
+            return {'labels': label2id.get(f'other {args.task}', 0)}
+        return {'labels': label2id[label]}
     
-    hazard_datasets = tokenized_datasets.map(encode_hazard_labels, batched=False)
+    labeled_datasets = tokenized_datasets.map(encode_labels, batched=False)
     
     # Initialize model
-    hazard_model = AutoModelForSequenceClassification.from_pretrained(
+    model = AutoModelForSequenceClassification.from_pretrained(
         args.model_path,
-        num_labels=len(hazard_labels),
-        id2label=hazard_id2label,
-        label2id=hazard_label2id
+        num_labels=len(labels),
+        id2label=id2label,
+        label2id=label2id
     )
     
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
     
     training_args = TrainingArguments(
-        run_name=f"{args.model_path}_{args.max_length}_hazard_data_aug_ver2",
-        output_dir=f"{args.output_dir}_{args.max_length}/hazard",
+        run_name=f"{args.model_path}_{args.max_length}_{args.task}_data_aug_ver2",
+        output_dir=f"{args.output_dir}_{args.max_length}/{args.task}",
         fp16=True,
         per_device_train_batch_size=args.batch_size,
         gradient_accumulation_steps=4,
@@ -162,7 +168,7 @@ def main():
         per_device_eval_batch_size=args.batch_size,
         num_train_epochs=args.num_epochs,
         weight_decay=0.01,
-        logging_dir=f"{args.output_dir}_{args.max_length}/hazard/logs",
+        logging_dir=f"{args.output_dir}_{args.max_length}/{args.task}/logs",
         logging_steps=10,
         save_total_limit=2,
         load_best_model_at_end=True,
@@ -170,10 +176,10 @@ def main():
     )
     
     trainer = CustomTrainer(
-        model=hazard_model,
+        model=model,
         args=training_args,
-        train_dataset=hazard_datasets['train'],
-        eval_dataset=hazard_datasets['validation'],
+        train_dataset=labeled_datasets['train'],
+        eval_dataset=labeled_datasets['validation'],
         tokenizer=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics_classification,
