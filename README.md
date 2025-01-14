@@ -28,11 +28,42 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
 - PyTorch >= 1.11.0
 - Transformers (Hugging Face) >= 4.22.0
 
+![Logo](image/logo.png)
+# SemEval 2025 Task 9: The Food Hazard Detection Challenge
+
+## Overview
+This repository contains our implementation for **SemEval 2025 Task 9: The Food Hazard Detection Challenge**. The challenge focuses on **explainable classification systems** for food-incident report titles collected from the web. The goal is to develop automated systems that identify and extract food-related hazards with high transparency and explainability.
+
+## Our System
+
+Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard prediction.
+
+### Approach:
+1. **Data Augmentation**:
+   - Augmented **100 samples** for the **9 lowest product categories** and **4 lowest hazard categories** to address class imbalance.
+
+2. **Ensemble of 13 Models**:
+   - The ensemble consists of **6 models for `hazard-category`**, **6 models for `product-category`** and **1 model multitask for both**.
+   - All 13 models are variations based on two main architectures:
+     - **`deberta-v3-large`**
+     - **`roberta-large`**
+   - The variations are achieved by applying different token chunking strategies during preprocessing.  
+
+### Results:
+- Our system achieved **Top 2 on the Public Leaderboard** during the **Conception Phase**, showcasing the effectiveness of our ensemble and preprocessing strategies.
+
+### Requirements:
+- Python >= 3.8
+- PyTorch >= 1.11.0
+- Transformers (Hugging Face) >= 4.22.0
+
 ### Setup:
 1. Clone the repository:
    ```bash
    git clone https://github.com/Zhennor/Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
    cd Semeval-Task9-The-Food-Hazard-Detection-Challenge-2025
+   ```
+
 2. Train model:
    # Model Training Documentation
 
@@ -96,25 +127,56 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
    - `learning_rate`: Learning rate for training (default: 1e-5)
    - `num_epochs`: Number of training epochs (default: 15)
 
-   ## Recommendations
-
-   - For most use cases, we recommend using the multitask training approach as it can leverage shared learning between tasks
-   - Adjust batch sizes and gradient accumulation steps based on your available GPU memory
-   - Experiment with learning rates between 1e-5 and 5e-5
-   - Monitor training logs to ensure stable training and adjust hyperparameters if needed
 3. Predict:
+
+   ### 3.1. Multitask Prediction
+   
+   Use this approach when you have a single model trained for both tasks:
+
+   ```bash
+   python predict_multitask.py \
+      --model_name "Quintu/deberta-v3-large-multitask-food" \
+      --input_json "test_data.json" \
+      --output_dir "predictions" \
+      --batch_size 2 \
+      --label_mapping "data/label_mappings.json"
+   ```
+
+   #### Parameters:
+   - `model_name`: HuggingFace model name or path (default: Quintu/deberta-v3-large-multitask-food)
+   - `input_json`: Path to test data JSON file
+   - `output_dir`: Directory to save predictions
+   - `batch_size`: Batch size for inference (default: 2)
+   - `label_mapping`: Path to label mapping file (default: data/label_mappings.json)
+
+   ### 3.2. Independent Prediction
+   
+   Use this approach when you have separate models for hazard and product classification:
+
    ```bash
    python predict_independent.py \
-      --hazard_model "huggingface_hazard_model_path" \
-      --product_model "huggingface_product_model_path" \
-      --input_json "private_test_512.json" \
-      --output_csv "submission.csv" \
-      --output_zip "submission.zip" \
-      -output_hazard_json "hazard_predictions.json" \
-      --output_product_json "product_predictions.json"
-   
+      --hazard_models "Quintu/deberta-v3-large-512-hazard Quintu/deberta-v3-large-1024-hazard" \
+      --product_models "Quintu/deberta-v3-large-512-product Quintu/deberta-v3-large-1024-product" \
+      --input_json "test_data.json" \
+      --output_dir "predictions" \
+      --batch_size 2 \
+      --weights "1.0 1.0" \
+      --label_mapping "data/label_mappings.json"
+   ```
 
-### List of Independent Models
+   #### Parameters:
+   - `hazard_models`: Space-separated list of hazard model paths
+   - `product_models`: Space-separated list of product model paths
+   - `input_json`: Path to test data JSON file
+   - `output_dir`: Directory to save predictions
+   - `batch_size`: Batch size for inference (default: 2)
+   - `weights`: Space-separated list of weights for model ensemble (default: equal weights)
+   - `label_mapping`: Path to label mapping file (default: data/label_mappings.json)
+
+### List of Models
+
+#### Multitask Models:
+- [Quintu/deberta-v3-large-multitask-food](https://huggingface.co/Quintu/deberta-v3-large-multitask-food): Combined model for both hazard and product classification
 
 #### Hazard-Category Models:
 - [Quintu/deberta-v3-large-512-hazard](https://huggingface.co/Quintu/deberta-v3-large-512-hazard)

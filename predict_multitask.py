@@ -3,10 +3,10 @@ from transformers import AutoTokenizer, AutoModel
 import json
 from torch.nn import functional as F
 from torch import nn
-from safetensors.torch import load_file
 from tqdm import tqdm
 import json
 from collections import defaultdict
+import argparse
 
 class MultiTaskClassifier(nn.Module):
     def __init__(self, model_name, product_num_labels, hazard_num_labels):
@@ -32,44 +32,29 @@ class MultiTaskClassifier(nn.Module):
             'hazard_logits': hazard_logits
         }
 
-def load_model_and_tokenizer(checkpoint_folder):
-    tokenizer_path = f"{checkpoint_folder}"  # Make sure the tokenizer exists at this path
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
+def load_model_and_tokenizer(model_name):
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModel.from_pretrained(model_name)
     
-    # Load training arguments and label mappings
-    training_args = torch.load(f"{checkpoint_folder}/training_args.bin")
     try:
         with open("data/label_mappings.json", 'r') as f:
             mappings = json.load(f)
     except FileNotFoundError:
         mappings = {
-            'product_label_to_id': {}, 
-            'hazard_label_to_id': {}   
+            'product_label_to_id': {},
+            'hazard_label_to_id': {}
         }
-    
+
     product_id_to_label = {v: k for k, v in mappings['product_label_to_id'].items()}
     hazard_id_to_label = {v: k for k, v in mappings['hazard_label_to_id'].items()}
-    
-    model = MultiTaskClassifier(
-        "microsoft/deberta-v3-large", 
-        product_num_labels=len(mappings['product_label_to_id']),
-        hazard_num_labels=len(mappings['hazard_label_to_id'])
-    )
-    
-    state_dict = load_file(f"{checkpoint_folder}/model.safetensors")
-    model.load_state_dict(state_dict)
+
     model.eval()
-    
     if torch.cuda.is_available():
         model = model.cuda()
-    
+
     return model, tokenizer
 
-
 def process_batch(texts, model, tokenizer):
-    """
-    Process a batch of texts and return probabilities
-    """
     inputs = tokenizer(
         texts,
         padding=True,
@@ -92,27 +77,18 @@ def process_batch(texts, model, tokenizer):
         
     return product_probs.cpu(), hazard_probs.cpu()
 
-def process_json_file(input_json_path, output_json_path, checkpoint_folder, batch_size=8):
-    """
-    Process the input JSON file, perform predictions and save to output JSON file
-    """
-    # Load model and tokenizer
-    model, tokenizer = load_model_and_tokenizer(checkpoint_folder)
+def process_json_file(input_json_path, output_json_path, model_name, batch_size=8):
+    model, tokenizer = load_model_and_tokenizer(model_name)
     
-    # Read input JSON
     with open(input_json_path, 'r') as f:
         data = json.load(f)
     
     results = []
     
-    # Process in batches
     for i in tqdm(range(0, len(data), batch_size)):
         batch_texts = [item['text'] for item in data[i:i + batch_size]]
-        
-        # Get predictions for the batch
         product_probs, hazard_probs = process_batch(batch_texts, model, tokenizer)
         
-        # Convert predictions to labels
         for j, item in enumerate(data[i:i + batch_size]):
             product_pred = {str(idx): float(prob) for idx, prob in enumerate(product_probs[j])}
             hazard_pred = {str(idx): float(prob) for idx, prob in enumerate(hazard_probs[j])}
@@ -122,7 +98,6 @@ def process_json_file(input_json_path, output_json_path, checkpoint_folder, batc
             
             results.append(item)
     
-    # Save results to output JSON
     with open(output_json_path, 'w') as f:
         json.dump(results, f, indent=4)
     
@@ -138,74 +113,71 @@ def aggregate_by_stt(data):
             grouped_results[stt]["hazard_probs"][label] += prob
     return grouped_results
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='Multi-task Classification for Products and Hazards')
+    
+    parser.add_argument('--model_name', type=str, default="Quintu/deberta-v3-large-multitask-food",
+                      help='HuggingFace model name or path (default: Quintu/deberta-v3-large-multitask-food)')
+    parser.add_argument('--input_json', type=str, required=True,
+                      help='Path to input JSON file')
+    parser.add_argument('--output_dir', type=str, required=True,
+                      help='Directory to save output files')
+    parser.add_argument('--batch_size', type=int, default=2,
+                      help='Batch size for processing (default: 2)')
+    parser.add_argument('--label_mapping', type=str, default="data/label_mappings.json",
+                      help='Path to label mapping file (default: data/label_mappings.json)')
+    parser.add_argument('--weights', type=float, nargs='+', default=[1.0],
+                      help='Weights for ensemble predictions (default: [1.0])')
+    
+    return parser.parse_args()
 
 if __name__ == "__main__":
-    checkpoint_folder = "checkpoint-multitask/checkpoint-3370"  
-    input_json_path = "data/public_test_512.json"  
-    output_json_path = "predictions_with_stt3370.json"  
-    batch_size = 2 
+    args = parse_args()
     
+    # Process the input file
+    intermediate_output = f"{args.output_dir}/predictions_intermediate.json"
     processed_data = process_json_file(
-        input_json_path, 
-        output_json_path, 
-        checkpoint_folder,
-        batch_size
+        args.input_json,
+        intermediate_output,
+        args.model_name,
+        args.batch_size
     )
     
-
-    label_mapping_file = "data/label_mappings.json"
-    with open(label_mapping_file, "r", encoding="utf-8") as f:
+    # Load label mappings
+    with open(args.label_mapping, "r", encoding="utf-8") as f:
         label_mapping = json.load(f)
 
     product_label_to_id = {str(v): k for k, v in label_mapping["product_label_to_id"].items()}
     hazard_label_to_id = {str(v): k for k, v in label_mapping["hazard_label_to_id"].items()}
 
-
-    # Đọc file JSON
-    files = [
-    "predictions_with_stt_3370.json"
-    ]
-
-    weights = [1]
-    grouped_results_list = []
-
-    for file in files:
-        with open(file, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            grouped_results_list.append(aggregate_by_stt(data))
-
-    # Gộp kết quả từ các file với trọng số
-    combined_results = defaultdict(lambda: {"product_probs": defaultdict(float), "hazard_probs": defaultdict(float)})
-
-    for grouped_results, weight in zip(grouped_results_list, weights):
-        for stt, probs in grouped_results.items():
-            for label, prob in probs["product_probs"].items():
-                combined_results[stt]["product_probs"][label] += prob * weight
-            for label, prob in probs["hazard_probs"].items():
-                combined_results[stt]["hazard_probs"][label] += prob * weight
-
-    # Tạo file kết quả đầu ra
+    # Process predictions
+    grouped_results = aggregate_by_stt(processed_data)
+    
+    # Prepare final results
     final_results_product = []
     final_results_hazard = []
 
-    for stt, probs in combined_results.items():
-        # Kết quả cho product_probabilities (convert từ ID -> label)
+    for stt, probs in grouped_results.items():
         product_probabilities = {product_label_to_id[label]: prob for label, prob in probs["product_probs"].items()}
         final_results_product.append({
             "stt": int(stt),
             "product_probabilities": product_probabilities,
         })
         
-        # Kết quả cho hazard_probabilities (convert từ ID -> label)
         hazard_probabilities = {hazard_label_to_id[label]: prob for label, prob in probs["hazard_probs"].items()}
         final_results_hazard.append({
             "stt": int(stt),
             "hazard_probabilities": hazard_probabilities,
         })
 
-    # Xuất ra file JSON
-    output_product_file = "results/public/product/product_probabilities_3370.json"
-    output_hazard_file = "results/public/hazard/hazard_probabilities_3370.json"
+    # Save results
+    output_product_file = f"{args.output_dir}/product/product_probabilities.json"
+    output_hazard_file = f"{args.output_dir}/hazard/hazard_probabilities.json"
+
+    # Ensure directories exist
+    import os
+    os.makedirs(os.path.dirname(output_product_file), exist_ok=True)
+    os.makedirs(os.path.dirname(output_hazard_file), exist_ok=True)
 
     with open(output_product_file, "w", encoding="utf-8") as f:
         json.dump(final_results_product, f, ensure_ascii=False, indent=4)
@@ -213,4 +185,4 @@ if __name__ == "__main__":
     with open(output_hazard_file, "w", encoding="utf-8") as f:
         json.dump(final_results_hazard, f, ensure_ascii=False, indent=4)
 
-    print(f"Kết quả đã được lưu vào '{output_product_file}' và '{output_hazard_file}'.")
+    print(f"Results saved to '{output_product_file}' and '{output_hazard_file}'")
