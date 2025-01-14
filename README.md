@@ -145,7 +145,7 @@ All necessary data can be downloaded from the [SemEval 2025 Task 9 Landing Page]
    - Monitor training logs to ensure stable training and adjust hyperparameters if needed
 3. Predict:
    ```bash
-   python predict.py \
+   python predict_independent.py \
       --hazard_model "huggingface_hazard_model_path" \
       --product_model "huggingface_product_model_path" \
       --input_json "private_test_512.json" \

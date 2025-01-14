@@ -5,23 +5,23 @@ import zipfile
 
 # Đường dẫn đến các tệp JSON đầu vào
 HAZARD_FILES = [
-        "eval_results/hazard/hazard_predictions_large-512-v2.json",                 #data aug ver1
-        "eval_results/hazard/hazard_predictions_large-768.json",                 #data aug ver2
-        "eval_results/hazard/hazard_predictions_large-1024-v2.json",                #data aug ver1
-        "eval_results/hazard/hazard_predictions_large-1280.json",                #data aug ver2
-        "eval_results/hazard/hazard_probabilities_3145.json",                    #multitask under and over sample 
-        "eval_results/hazard/hazard_predictions_roberta-large-512.json",         #data aug ver2
-        "eval_results/hazard/hazard_predictions_roberta-large-1024.json",        #data aug ver2 
-    ]
+            "results/public/hazard/hazard_predictions_large-512.json",                 #data aug ver1
+            "results/public/hazard/hazard_predictions_large-768.json",                 #data aug ver2
+            "results/public/hazard/hazard_predictions_large-1024.json",                #data aug ver1
+            "results/public/hazard/hazard_predictions_large-1280.json",                #data aug ver2
+            "results/public/hazard/hazard_probabilities_3370.json",                    #multitask under and over sample 
+            "results/public/hazard/hazard_predictions_roberta-large-512.json",         #data aug ver2
+            "results/public/hazard/hazard_predictions_roberta-large-1024.json"         #data aug ver2
+        ]
 PRODUCT_FILES = [
-        "eval_results/product/product_predictions_large-512-v2.json",               #data aug ver 1
-        "eval_results/product/product_predictions_large-768.json",               #data aug ver2
-        "eval_results/product/product_predictions_large-1024-v2.json",              #data aug ver 1
-        "eval_results/product/product_predictions_large-1280.json",              #data aug ver2
-        "eval_results/product/product_probabilities_3145.json",                  #multitask under and over sample 
-        "eval_results/product/product_predictions_roberta-large-512.json",        #data aug ver2
-        "eval_results/product/product_predictions_roberta-large-1024.json",      #data aug ver2
-    ]
+            "results/public/product/product_predictions_large-512.json",               #data aug ver 1
+            "results/public/product/product_predictions_large-768.json",               #data aug ver2
+            "results/public/product/product_predictions_large-1024.json",              #data aug ver 1
+            "results/public/product/product_predictions_large-1280.json",              #data aug ver2
+            "results/public/product/product_probabilities_3370.json",                  #multitask under and over sample 
+            "results/public/product/product_predictions_roberta-large-512.json",       #data aug ver2
+            "results/public/product/product_predictions_roberta-large-1024.json"       #data aug ver2
+        ]
 OUTPUT_HAZARD_ENSEMBLED = "hazard_predictions_ensembled.json"
 OUTPUT_PRODUCT_ENSEMBLED = "product_predictions_ensembled.json"
 OUTPUT_CSV = "submission.csv"
@@ -39,8 +39,8 @@ OUTPUT_CSV = "submission.csv"
 # PRODUCT_WEIGHTS = [0.2258, 0.0323, 0.0323, 0.2258, 0.3226, 0.1290, 0.0323]
 
 #grid_search weight- 2
-HAZARD_WEIGHTS = [0.3182, 0.3182, 0.0455, 0.1818, 0.0455, 0.0455, 0.0455]  
-PRODUCT_WEIGHTS = [0.1628, 0.2326, 0.0930, 0.0930, 0.1628, 0.0233, 0.2326]
+HAZARD_WEIGHTS = [0.0400, 0.0400, 0.4000, 0.4000, 0.0400, 0.0400, 0.0400]  
+PRODUCT_WEIGHTS = [0.2941, 0.2941, 0.2059, 0.0294, 0.1176, 0.0294, 0.0294]
 
 def load_json(file_path):
     """Tải dữ liệu từ tệp JSON."""
