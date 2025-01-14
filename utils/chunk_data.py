@@ -1,8 +1,8 @@
 import pandas as pd
 import json
 import re
-file_path = '../incidents.csv'
-output_file = "private_test_512.json"
+file_path = '../data/data.csv'
+output_file = "ss_test_512.json"
 df = pd.read_csv(file_path)
 data = df.to_dict(orient='records')
 
