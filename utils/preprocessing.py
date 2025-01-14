@@ -6,6 +6,7 @@ from langdetect import detect
 import asyncio
 import nest_asyncio
 
+translator = Translator()
 
 def extract_text_from_html(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -21,8 +22,8 @@ def clean_text(text):
 
 async def translate_to_english(text):
     try:
-        if detect(text) != 'en':  
-            translated = await translator.translate(text, dest='en')
+        if detect(text) != 'en': 
+            translated = await asyncio.to_thread(translator.translate, text, dest='en')
             return translated.text
         return text
     except Exception as e:
@@ -31,20 +32,20 @@ async def translate_to_english(text):
 
 async def process_dataframe(df):
     df['text'] = await asyncio.gather(*(translate_to_english(text) for text in df['text']))
-    df['title'] = await asyncio.gather(*(translate_to_english(title) for title in df['title']))
-    return df
 
+    df['title'] = await asyncio.gather(*(translate_to_english(title) for title in df['title']))
+
+    return df
 
 data = pd.read_csv('data.csv')
 
 data['text'] = data['text'].apply(extract_text_from_html)
 data['text'] = data['text'].apply(clean_text)
 
-def main():
-
-    data = process_dataframe(data)
-
+async def main():
+    nest_asyncio.apply()
+    data = await process_dataframe(data)
     data.to_csv('final_data_cleaned.csv', index=False)
     print("Translation complete and file saved.")
 
-main()
+asyncio.run(main())
