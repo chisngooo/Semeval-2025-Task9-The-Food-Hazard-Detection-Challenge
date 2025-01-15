@@ -1,13 +1,13 @@
 import pandas as pd
 import json
 import re
-file_path = '../data/train.csv'
-output_file = "../data/chunk_data/train/train_1280.json"
+file_path = 'final_data_cleaned.csv'
+output_file = "public_cleaned_512.json"
 df = pd.read_csv(file_path)
 data = df.to_dict(orient='records')
 
 #400,650, 900, 1150
-def chunk_text_by_sentence(text, chunk_size=1150):
+def chunk_text_by_sentence(text, chunk_size=400):
     sentences = re.split(r'(?<=[.!?]) +', text)
     chunks = []
     current_chunk = []

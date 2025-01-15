@@ -6,6 +6,9 @@ from langdetect import detect
 import asyncio
 import nest_asyncio
 
+# Áp dụng `nest_asyncio` để tránh lỗi khi chạy nhiều async loop
+nest_asyncio.apply()
+
 translator = Translator()
 
 def extract_text_from_html(html_content):
@@ -32,20 +35,25 @@ async def translate_to_english(text):
 
 async def process_dataframe(df):
     df['text'] = await asyncio.gather(*(translate_to_english(text) for text in df['text']))
-
     df['title'] = await asyncio.gather(*(translate_to_english(title) for title in df['title']))
-
     return df
 
-data = pd.read_csv('data.csv')
-
-data['text'] = data['text'].apply(extract_text_from_html)
-data['text'] = data['text'].apply(clean_text)
+# Khởi tạo dữ liệu ban đầu
+try:
+    data = pd.read_csv('../data/public_test.csv')
+    data['text'] = data['text'].apply(extract_text_from_html)
+    data['text'] = data['text'].apply(clean_text)
+except Exception as e:
+    print(f"Error loading and preprocessing data: {e}")
+    data = None
 
 async def main():
-    nest_asyncio.apply()
-    data = await process_dataframe(data)
-    data.to_csv('final_data_cleaned.csv', index=False)
+    if data is None:
+        raise ValueError("Data must be loaded and preprocessed before running main().")
+    df_cleaned = await process_dataframe(data)
+    df_cleaned.to_csv('final_data_cleaned.csv', index=False)
     print("Translation complete and file saved.")
 
-asyncio.run(main())
+# Chạy chương trình
+if __name__ == "__main__":
+    asyncio.run(main())

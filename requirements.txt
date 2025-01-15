@@ -2,3 +2,5 @@ transformers==4.48.0
 numpy==1.23.5
 scikit-learn==1.6.1
 tqdm==4.67.1
+googletrans==4.0.2
+langdetect==1.0.9
