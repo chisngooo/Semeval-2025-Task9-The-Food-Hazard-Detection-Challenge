@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Cấu hình các đường dẫn đầu vào và đầu ra
-hazard_model_path="Quintu/roberta-large-768-hazard"
-product_model_path="Quintu/roberta-large-768-product"
+hazard_model_path="Quintu/roberta-large-1280-hazard"
+product_model_path="Quintu/roberta-large-1280-product"
 input_json_path="data/public_test_512.json"
 output_csv_path="submission.csv"
 output_zip_path="submission.zip"
