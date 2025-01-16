@@ -7,6 +7,7 @@ from tqdm import tqdm
 import json
 from collections import defaultdict
 import argparse
+import os
 
 class MultiTaskClassifier(nn.Module):
     def __init__(self, model_name, product_num_labels, hazard_num_labels):
@@ -175,7 +176,6 @@ if __name__ == "__main__":
     output_hazard_file = f"{args.output_dir}/hazard/hazard_probabilities.json"
 
     # Ensure directories exist
-    import os
     os.makedirs(os.path.dirname(output_product_file), exist_ok=True)
     os.makedirs(os.path.dirname(output_hazard_file), exist_ok=True)
 
