@@ -130,30 +130,22 @@ if __name__ == "__main__":
     HAZARD_FILES = [
             "results/public/hazard/hazard_predictions_large-512-v2.json",                 #data aug ver1
             "results/public/hazard/hazard_predictions_large-768.json",                 #data aug ver2
-            # "results/private/hazard/hazard_predictions_large-1024-v2.json",                #data aug ver1
             "results/public/hazard/hazard_predictions_large-1280.json",                #data aug ver2
-            # "results/private/hazard/hazard_probabilities_3145.json",                    #multitask under and over sample 
             "results/public/hazard/hazard_predictions_roberta-large-512.json",         #data aug ver2
-            # "results/private/hazard/hazard_predictions_roberta-large-1024.json",         #data aug ver2
-            # "results/public/hazard/hazard_predictions_large-512-sl1.json",
-            "results/public/hazard/hazard_predictions_large-512-sl2.json"
+            "new_result/public/hazard/hazard_predictions_deberta-512.json",
         ]
     PRODUCT_FILES = [
             "results/public/product/product_predictions_large-512-v2.json",               #data aug ver 1
             "results/public/product/product_predictions_large-768.json",               #data aug ver2
-            # "results/private/product/product_predictions_large-1024-v2.json",              #data aug ver 1
-            # "results/private/product/product_predictions_large-1280.json",              #data aug ver2
             "results/public/product/product_probabilities_3145.json",                  #multitask under and over sample 
-            # "results/private/product/product_predictions_roberta-large-512.json",        #data aug ver2
-            "results/public/product/product_predictions_roberta-large-1024.json",       #data aug ver2\
-            "results/public/product/product_predictions_large-512-sl1.json",
-            "results/public/product/product_predictions_large-512-sl2.json"
+            "results/public/product/product_predictions_roberta-large-512.json",       #data aug ver2\
+            "new_result/public/product/product_predictions_deberta-512.json",
         ]
         # Define ground truth file
     GROUND_TRUTH_FILE = "data/ground_truth.csv"
     
     # Define weight range (0.1 to 1.0 với step 0.1)
-    WEIGHT_RANGE = np.arange(0.1, 1.1, 0.2)
+    WEIGHT_RANGE = np.arange(0.1, 1.1, 0.3)
 
     print("\nStarting hazard category grid search...")
     try:
