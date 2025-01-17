@@ -1,8 +1,8 @@
 import pandas as pd
 import json
 import re
-file_path = 'final_data_cleaned.csv'
-output_file = "public_cleaned_512.json"
+file_path = '../data/data_aug_product.csv'
+output_file = "product/product_512.json"
 df = pd.read_csv(file_path)
 data = df.to_dict(orient='records')
 
