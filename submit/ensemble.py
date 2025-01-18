@@ -46,9 +46,13 @@ OUTPUT_CSV = "submission.csv"
 # HAZARD_WEIGHTS = [0.3571, 0.3571, 0.2143, 0.0714]  
 # PRODUCT_WEIGHTS = [0.2059, 0.2647, 0.2647, 0.0294, 0.2059, 0.0294]
 
-# #grid_search weight- 0.8223
-HAZARD_WEIGHTS = [0.3500, 0.3500, 0.2000, 0.0500, 0.0500]  
-PRODUCT_WEIGHTS = [0.1842, 0.2632, 0.1053, 0.1842, 0.2632]
+# # #grid_search weight- 0.8223
+# HAZARD_WEIGHTS = [0.3500, 0.3500, 0.2000, 0.0500, 0.0500]  
+# PRODUCT_WEIGHTS = [0.1842, 0.2632, 0.1053, 0.1842, 0.2632]
+
+# #grid_search weight- test
+HAZARD_WEIGHTS = [0, 0, 0, 0, 0]  
+PRODUCT_WEIGHTS = [0, 0, 0, 0, 1]
 
 def load_json(file_path):
     """Tải dữ liệu từ tệp JSON."""
