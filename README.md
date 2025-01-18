@@ -150,24 +150,17 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
 ### List of Models
 
 #### Multitask Models:
-- [Quintu/deberta-v3-large-multitask-food](https://huggingface.co/Quintu/deberta-v3-large-multitask-food): Combined model for both hazard and product classification
+- [Quintu/deberta-multitask-v0](https://huggingface.co/Quintu/deberta-multitask-v0): Combined model for both hazard and product classification
 
 #### Hazard-Category Models:
-- [Quintu/deberta-v3-large-512-hazard](https://huggingface.co/Quintu/deberta-v3-large-512-hazard)
-- [Quintu/deberta-v3-large-768-hazard](https://huggingface.co/Quintu/deberta-v3-large-768-hazard)
-- [Quintu/deberta-v3-large-1024-hazard](https://huggingface.co/Quintu/deberta-v3-large-1024-hazard)
-- [Quintu/deberta-v3-large-1280-hazard](https://huggingface.co/Quintu/deberta-v3-large-1280-hazard)
-- [Quintu/deberta-v3-large-512-hazard-aug2](https://huggingface.co/Quintu/deberta-v3-large-512-hazard-aug2)
-- [Quintu/deberta-v3-large-1024-hazard-aug2](https://huggingface.co/Quintu/deberta-v3-large-1024-hazard-aug2)
-- [Quintu/roberta-large-512-hazard](https://huggingface.co/Quintu/roberta-large-512-hazard)
-- [Quintu/roberta-large-1024-hazard](https://huggingface.co/Quintu/roberta-large-1024-hazard)
+- [Quintu/deberta-512-hazard-v1](https://huggingface.co/Quintu/deberta-512-hazard-v1)
+- [Quintu/deberta-768-hazard-v1](https://huggingface.co/Quintu/deberta-768-hazard-v1)
+- [Quintu/deberta-1280-hazard-v1](https://huggingface.co/Quintu/deberta-1280-hazard-v1)
+- [Quintu/roberta-512-hazard-v1](https://huggingface.co/Quintu/roberta-512-hazard-v1)
+- [Quintu/deberta-512-hazard-v2](https://huggingface.co/Quintu/deberta-512-hazard-v2)
 
 #### Product-Category Models:
-- [Quintu/deberta-v3-large-512-product](https://huggingface.co/Quintu/deberta-v3-large-512-product)
-- [Quintu/deberta-v3-large-768-product](https://huggingface.co/Quintu/deberta-v3-large-768-product)
-- [Quintu/deberta-v3-large-1024-product](https://huggingface.co/Quintu/deberta-v3-large-1024-product)
-- [Quintu/deberta-v3-large-1280-product](https://huggingface.co/Quintu/deberta-v3-large-1280-product)
-- [Quintu/deberta-v3-large-512-product-aug2](https://huggingface.co/Quintu/deberta-v3-large-512-product-aug2)
-- [Quintu/deberta-v3-large-1024-product-aug2](https://huggingface.co/Quintu/deberta-v3-large-1024-product-aug2)
-- [Quintu/roberta-large-512-product](https://huggingface.co/Quintu/roberta-large-512-product)
-- [Quintu/roberta-large-1024-product](https://huggingface.co/Quintu/roberta-large-1024-product)
+- [Quintu/deberta-512-product-v1](https://huggingface.co/Quintu/deberta-512-product-v1)
+- [Quintu/deberta-768-product-v1](https://huggingface.co/Quintu/deberta-768-product-v1)
+- [Quintu/roberta-512-product-v1](https://huggingface.co/Quintu/roberta-512-product-v1)
+- [Quintu/deberta-512-product-v2](https://huggingface.co/Quintu/deberta-512-product-v2)
