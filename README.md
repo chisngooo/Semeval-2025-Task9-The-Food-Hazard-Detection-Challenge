@@ -109,20 +109,22 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
 
    ```bash
    python3 predict_multitask.py \
-      --model_name "Quintu/deberta-v3-large-multitask-food" \
-      --input_json "data/private_test_512.json" \
-      --output_dir "predictions" \
-      --batch_size 2 \
-      --label_mapping "data/label_mappings.json"
+      --model_name "microsoft/deberta-v3-large" \
+      --drive_id "your_drive_id_here" \
+      --input_json "path/to/data" \
+      --output_dir "output" \
+      --label_mapping "data/label_mappings.json" \
+      --batch_size 8
    ```
 
    #### Parameters:
    - `model_name`: HuggingFace model name or path (default: Quintu/deberta-v3-large-multitask-food)
+   - `drive_id` : Path to drive model.safetensors multitask
    - `input_json`: Path to test data JSON file
    - `output_dir`: Directory to save predictions
-   - `batch_size`: Batch size for inference (default: 2)
    - `label_mapping`: Path to label mapping file (default: data/label_mappings.json)
-
+   - `batch_size`: Batch size for inference (default: 8)
+   
    ### 4.2. Independent Prediction
    
    Use this approach when you have separate models for hazard and product classification:

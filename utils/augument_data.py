@@ -89,7 +89,6 @@ aug_label_product = [
     "sugars and syrups"
 ]
 
-#Augument data follow product-category 
 for label in aug_label_product:
     count_aug=0
     while(count_aug<=100):
@@ -112,7 +111,6 @@ for label in aug_label_product:
             HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE
         })
         print(response.text)
-                #Gọi hàm
         extracted_text=extract_square_bracket_content(response.text)
         if extracted_text:
             print("OK")
@@ -127,7 +125,6 @@ for label in aug_label_product:
         count_aug+=20
 
 
-#Augument data following hazard-category
 for label in aug_label_hazard:
     count_aug=0
     while(count_aug<=100):

@@ -1,4 +1,4 @@
-input_file="./data/train.json"
+input_file="./data/train_512.json"
 output_dir="./results"
 model_output_dir="./model"
 learning_rate=2e-5
@@ -9,6 +9,8 @@ gradient_accumulation_steps=2
 oversample_count=50
 undersample_count=500
 seed=42
+
+cd ..
 
 python3 train_multitask.py \
   --input_file "$input_file" \

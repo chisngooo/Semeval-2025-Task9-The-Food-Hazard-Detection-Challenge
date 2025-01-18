@@ -8,7 +8,6 @@ import csv
 import zipfile
 from tqdm import tqdm
 
-# Define function to parse command-line arguments
 def parse_args():
     parser = argparse.ArgumentParser(description="Hazard and product prediction script")
     parser.add_argument("--hazard_model", type=str, required=True, help="Path to the hazard model checkpoint on Hugging Face")
@@ -20,15 +19,12 @@ def parse_args():
     parser.add_argument("--output_product_json", type=str, required=True, help="Path to the output product predictions JSON")
     return parser.parse_args()
 
-# Main function for prediction
 def main():
-    # Parse command-line arguments
     args = parse_args()
 
     MAX_LENGTH = 512
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # Load models and tokenizer from Hugging Face
     tokenizer = AutoTokenizer.from_pretrained(args.hazard_model)
     hazard_model = AutoModelForSequenceClassification.from_pretrained(args.hazard_model)
     product_model = AutoModelForSequenceClassification.from_pretrained(args.product_model)

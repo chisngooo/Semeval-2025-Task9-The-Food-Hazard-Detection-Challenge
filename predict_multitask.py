@@ -6,6 +6,8 @@ from torch import nn
 from tqdm import tqdm
 import json
 from collections import defaultdict
+from safetensors.torch import load_file  
+from huggingface_hub import hf_hub_download
 import argparse
 import os
 
@@ -34,9 +36,7 @@ class MultiTaskClassifier(nn.Module):
         }
 
 def load_model_and_tokenizer(model_name):
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModel.from_pretrained(model_name)
-    
+    tokenizer = AutoTokenizer.from_pretrained(model_name)    
     try:
         with open("data/label_mappings.json", 'r') as f:
             mappings = json.load(f)
@@ -48,8 +48,22 @@ def load_model_and_tokenizer(model_name):
 
     product_id_to_label = {v: k for k, v in mappings['product_label_to_id'].items()}
     hazard_id_to_label = {v: k for k, v in mappings['hazard_label_to_id'].items()}
-
-    model.eval()
+    
+    model = MultiTaskClassifier(
+        "microsoft/deberta-v3-large" , 
+        product_num_labels=len(mappings['product_label_to_id']),
+        hazard_num_labels=len(mappings['hazard_label_to_id'])
+    )
+    try:
+        safetensors_file = hf_hub_download(
+            repo_id=model_name, 
+            filename="model.safetensors"
+        )
+        state_dict = load_file(safetensors_file)
+        model.load_state_dict(state_dict)
+    except Exception as e:
+        print(f"Lỗi khi tải trọng số từ safetensors: {e}")
+    model.eval()  
     if torch.cuda.is_available():
         model = model.cuda()
 
@@ -60,7 +74,7 @@ def process_batch(texts, model, tokenizer):
         texts,
         padding=True,
         truncation=True,
-        max_length=1024,
+        max_length=512,
         return_tensors="pt",
         return_token_type_ids=False 
     )
@@ -117,8 +131,8 @@ def aggregate_by_stt(data):
 def parse_args():
     parser = argparse.ArgumentParser(description='Multi-task Classification for Products and Hazards')
     
-    parser.add_argument('--model_name', type=str, default="Quintu/deberta-v3-large-multitask-food",
-                      help='HuggingFace model name or path (default: Quintu/deberta-v3-large-multitask-food)')
+    parser.add_argument('--model_name', type=str, default="Quintu/deberta-multitask-v0",
+                      help='HuggingFace model name or path (default: Quintu/deberta-multitask-v0)')
     parser.add_argument('--input_json', type=str, required=True,
                       help='Path to input JSON file')
     parser.add_argument('--output_dir', type=str, required=True,
@@ -127,15 +141,12 @@ def parse_args():
                       help='Batch size for processing (default: 2)')
     parser.add_argument('--label_mapping', type=str, default="data/label_mappings.json",
                       help='Path to label mapping file (default: data/label_mappings.json)')
-    parser.add_argument('--weights', type=float, nargs='+', default=[1.0],
-                      help='Weights for ensemble predictions (default: [1.0])')
-    
+
     return parser.parse_args()
 
 if __name__ == "__main__":
     args = parse_args()
     
-    # Process the input file
     intermediate_output = f"{args.output_dir}/predictions_intermediate.json"
     processed_data = process_json_file(
         args.input_json,
@@ -144,17 +155,14 @@ if __name__ == "__main__":
         args.batch_size
     )
     
-    # Load label mappings
     with open(args.label_mapping, "r", encoding="utf-8") as f:
         label_mapping = json.load(f)
 
     product_label_to_id = {str(v): k for k, v in label_mapping["product_label_to_id"].items()}
     hazard_label_to_id = {str(v): k for k, v in label_mapping["hazard_label_to_id"].items()}
 
-    # Process predictions
     grouped_results = aggregate_by_stt(processed_data)
     
-    # Prepare final results
     final_results_product = []
     final_results_hazard = []
 

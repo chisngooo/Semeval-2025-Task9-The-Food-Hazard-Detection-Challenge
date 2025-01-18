@@ -6,7 +6,6 @@ from langdetect import detect
 import asyncio
 import nest_asyncio
 
-# Áp dụng `nest_asyncio` để tránh lỗi khi chạy nhiều async loop
 nest_asyncio.apply()
 
 translator = Translator()
@@ -38,7 +37,6 @@ async def process_dataframe(df):
     df['title'] = await asyncio.gather(*(translate_to_english(title) for title in df['title']))
     return df
 
-# Khởi tạo dữ liệu ban đầu
 try:
     data = pd.read_csv('../data/public_test.csv')
     data['text'] = data['text'].apply(extract_text_from_html)
@@ -54,6 +52,5 @@ async def main():
     df_cleaned.to_csv('final_data_cleaned.csv', index=False)
     print("Translation complete and file saved.")
 
-# Chạy chương trình
 if __name__ == "__main__":
     asyncio.run(main())

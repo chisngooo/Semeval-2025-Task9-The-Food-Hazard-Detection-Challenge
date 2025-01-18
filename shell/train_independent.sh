@@ -1,6 +1,6 @@
 
 model_path="microsoft/deberta-v3-large"
-data_path="data/train.json"
+data_path="data/train_512.json"
 output_dir="output/checkpoints"
 task="hazard"
 max_length="512"

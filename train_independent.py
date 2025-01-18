@@ -88,7 +88,7 @@ def load_and_preprocess_data(data_path, max_length, task):
     
     if task == 'hazard':
         labels = sorted(list(data["hazard_category"].unique()))
-    else:  # task == 'product'
+    else:  
         labels = sorted(list(data["product_category"].unique()))
         
     label2id = {label: idx for idx, label in enumerate(labels)}
@@ -117,12 +117,10 @@ def main():
     
     args = parser.parse_args()
     
-    # Load and preprocess data
     datasets, labels, label2id, id2label = load_and_preprocess_data(
         args.data_path, args.max_length, args.task
     )
     
-    # Initialize tokenizer
     tokenizer = AutoTokenizer.from_pretrained(args.model_path)
     
     def tokenize_function(examples):
@@ -135,14 +133,13 @@ def main():
     tokenized_datasets = datasets.map(tokenize_function, batched=True)
     
     def encode_labels(examples):
-        label = examples[args.task]  # Use either 'hazard' or 'product' based on task
+        label = examples[args.task]  
         if label not in label2id:
             return {'labels': label2id.get(f'other {args.task}', 0)}
         return {'labels': label2id[label]}
     
     labeled_datasets = tokenized_datasets.map(encode_labels, batched=False)
     
-    # Initialize model
     model = AutoModelForSequenceClassification.from_pretrained(
         args.model_path,
         num_labels=len(labels),
