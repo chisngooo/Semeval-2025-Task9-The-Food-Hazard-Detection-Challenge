@@ -48,7 +48,6 @@ def ensemble_probabilities(data_list, weights):
     ensembled = []
     for idx in range(len(data_list[0])):
         entry = {}
-        # Ensemble hazard probabilities
         if "hazard_probabilities" in data_list[0][idx]:
             hazard_probs = {}
             for label in data_list[0][idx]["hazard_probabilities"].keys():
@@ -58,7 +57,6 @@ def ensemble_probabilities(data_list, weights):
                 )
                 hazard_probs[label] = weighted_sum
             entry["hazard_probabilities"] = hazard_probs
-        # Ensemble product probabilities
         if "product_probabilities" in data_list[0][idx]:
             product_probs = {}
             for label in data_list[0][idx]["product_probabilities"].keys():
@@ -126,25 +124,22 @@ def grid_search_product(product_files, ground_truth_csv, weight_range):
     return best_score, best_weights
 
 if __name__ == "__main__":
-    # Define files and parameters
     HAZARD_FILES = [
-            "results/public/hazard/hazard_predictions_large-512-v2.json",                 #data aug ver1
-            "results/public/hazard/hazard_predictions_large-768.json",                 #data aug ver2
-            "results/public/hazard/hazard_predictions_large-1280.json",                #data aug ver2
-            "results/public/hazard/hazard_predictions_roberta-large-512.json",         #data aug ver2
-            "new_result/public/hazard/hazard_predictions_deberta-512.json",
-        ]
+            "results/public/hazard/aug1_deberta_512.json",                 
+            "results/public/hazard/aug1_deberta_768.json",                 
+            "results/public/hazard/aug1_roberta_1280.json",                
+            "results/public/hazard/aug1_roberta_512.json",         
+            "results/public/hazard/aug2_deberta_512.json",
+    ]
     PRODUCT_FILES = [
-            "results/public/product/product_predictions_large-512-v2.json",               #data aug ver 1
-            "results/public/product/product_predictions_large-768.json",               #data aug ver2
-            "results/public/product/product_probabilities_3145.json",                  #multitask under and over sample 
-            "results/public/product/product_predictions_roberta-large-512.json",       #data aug ver2\
-            "new_result/public/product/product_predictions_deberta-512.json",
-        ]
-        # Define ground truth file
+            "results/public/product/aug1_deberta_512.json",              
+            "results/public/product/aug1_deberta_768.json",               
+            "results/public/product/original_deberta_multitask.json",                  
+            "results/public/product/aug1_roberta_512.json",       
+            "results/public/product/aug2_deberta_512.json",
+    ]
     GROUND_TRUTH_FILE = "data/ground_truth.csv"
     
-    # Define weight range (0.1 to 1.0 với step 0.1)
     WEIGHT_RANGE = np.arange(0.1, 1.1, 0.3)
 
     print("\nStarting hazard category grid search...")
