@@ -41,8 +41,7 @@ These results validate our ensemble approach and preprocessing strategies.
 
 ### Requirements:
 - Python == 3.10
-- PyTorch >= 1.11.0
-- Transformers (Hugging Face) >= 4.22.0
+
 
 ### Setup:
 1. Clone the repository:
