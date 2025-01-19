@@ -8,19 +8,36 @@ This repository contains our implementation for **SemEval 2025 Task 9: The Food 
 
 Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard prediction.
 
-### Approach:
-1. **Data Augmentation**:
-   - Augmented **100 samples** for the **9 lowest product categories** and **4 lowest hazard categories** to address class imbalance.
+### Datasets Used
+We utilize three distinct datasets in our approach:
+1. **Original Dataset**: The unmodified baseline dataset
+2. **Aug1 Dataset**: Targeted augmentation with 100 additional samples for:
+   - 9 lowest-represented product categories
+   - 4 lowest-represented hazard categories
+3. **Aug2 Dataset**: Comprehensive augmentation achieving near-balanced class distributions
 
-2. **Ensemble of 13 Models**:
-   - The ensemble consists of **6 models for `hazard-category`**, **6 models for `product-category`** and **1 model multitask for both**.
-   - All 13 models are variations based on two main architectures:
-     - **`deberta-v3-large`**
-     - **`roberta-large`**
-   - The variations are achieved by applying different token chunking strategies during preprocessing.  
+### Approach
+1. **Strategic Data Augmentation**:
+   - **Aug1**: Focused on addressing severe class imbalances
+   - **Aug2**: Comprehensive balancing across all classes
 
-### Results:
-- Our system achieved **Top 2 on the Public Leaderboard** during the **Conception Phase**, showcasing the effectiveness of our ensemble and preprocessing strategies.
+2. **Robust Model Ensemble**:
+   The ensemble consists of 13 specialized models:
+   - 6 models for `hazard-category` classification
+   - 5 models for `product-category` classification
+   - 1 multitask model handling both classifications
+   
+   All models are based on two primary architectures:
+   - **`deberta-v3-large`**
+   - **`roberta-large`**
+   
+   Model variations are created through different token chunking strategies during preprocessing.
+
+### Results
+Our system achieved:
+- **#1 Position** on the Final Leaderboard
+- Top performance during the Conception Phase
+These results validate our ensemble approach and preprocessing strategies.
 
 ### Requirements:
 - Python == 3.10
@@ -110,20 +127,19 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
    ```bash
    python3 predict_multitask.py \
       --model_name "microsoft/deberta-v3-large" \
-      --drive_id "your_drive_id_here" \
       --input_json "path/to/data" \
       --output_dir "output" \
+      --batch_size 8 \
       --label_mapping "data/label_mappings.json" \
-      --batch_size 8
+      
    ```
 
    #### Parameters:
    - `model_name`: HuggingFace model name or path (default: Quintu/deberta-v3-large-multitask-food)
-   - `drive_id` : Path to drive model.safetensors multitask
    - `input_json`: Path to test data JSON file
    - `output_dir`: Directory to save predictions
-   - `label_mapping`: Path to label mapping file (default: data/label_mappings.json)
    - `batch_size`: Batch size for inference (default: 8)
+   - `label_mapping`: Path to label mapping file (default: data/label_mappings.json)
    
    ### 4.2. Independent Prediction
    
@@ -166,3 +182,12 @@ Our system focuses on **Subtask 1 (ST1)**: Text classification for food hazard p
 - [Quintu/deberta-768-product-v1](https://huggingface.co/Quintu/deberta-768-product-v1)
 - [Quintu/roberta-512-product-v1](https://huggingface.co/Quintu/roberta-512-product-v1)
 - [Quintu/deberta-512-product-v2](https://huggingface.co/Quintu/deberta-512-product-v2)
+
+
+
+
+
+
+
+
+
