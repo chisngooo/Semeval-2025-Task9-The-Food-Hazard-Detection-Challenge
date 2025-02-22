@@ -4,18 +4,18 @@ from collections import defaultdict
 import zipfile
 
 HAZARD_FILES = [
-            "results/private/hazard/aug1_deberta_512.json",                 
-            "results/private/hazard/aug1_deberta_768.json",                 
-            "results/private/hazard/aug1_roberta_1280.json",                
-            "results/private/hazard/aug1_roberta_512.json",         
-            "results/private/hazard/aug2_deberta_512.json",
+            "../results/private/hazard/aug1_deberta_512.json",                 
+            "../results/private/hazard/aug1_deberta_768.json",                 
+            "../results/private/hazard/aug1_deberta_1280.json",                
+            "../results/private/hazard/aug1_roberta_512.json",         
+            "../results/private/hazard/aug2_deberta_512.json",
         ]
 PRODUCT_FILES = [
-            "results/private/product/aug1_deberta_512.json",              
-            "results/private/product/aug1_deberta_768.json",               
-            "results/private/product/original_deberta_multitask.json",                  
-            "results/private/product/aug1_roberta_512.json",       
-            "results/private/product/aug2_deberta_512.json",
+            "../results/private/product/aug1_deberta_512.json",              
+            "../results/private/product/aug1_deberta_768.json",               
+            "../results/private/product/original_deberta_multitask.json",                  
+            "../results/private/product/aug1_roberta_512.json",       
+            "../results/private/product/aug2_deberta_512.json",
         ]
 
 # relative_weight
